@@ -165,3 +165,4 @@ class Preprocesamiento_Donantes:
                 return self.df, df_error
         else:
             return self.df
+        #prueba 2
