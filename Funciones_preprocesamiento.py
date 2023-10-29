@@ -165,3 +165,64 @@ class Preprocesamiento_Donantes:
                 return self.df, df_error
         else:
             return self.df
+        
+        # Método para corregir la columna de Churn y Lapsed probability
+    def corregir_prob(self, col:str):
+        """Método para corregir la columna de Churn
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de los donantes
+            col (str): Nombre de la columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los valores corregidos"""
+
+        # Revisar valores mayores a 1 y dividirlos en 100
+        self.df[col] = np.where(self.df[col]>1, self.df[col]/100, self.df[col])
+        
+        return self.df
+    
+    # Método para remover donantes con menos de 3 meses de captación
+    def remover_donantes_menos_3_meses(self, col:str):
+        """Método para remover donantes con menos de 3 meses de captación
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de los donantes
+            col (str): Nombre de la columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los donantes que cumplen la condición"""
+
+        # Obtener la fecha de hoy
+        today = dt.datetime.today()
+
+        # Obtener los donantes con menos de 3 meses de captación
+        self.df[col] = pd.to_datetime(self.df[col], errors='coerce')
+        self.df = self.df[self.df[col]<(dt.datetime(today.year, today.month, today.day) - dt.timedelta(days=90))]
+
+        # Retornar el DataFrame
+        return self.df
+    
+    # Método para reemplazar unidades decimales
+    def corregir_ciudades_o_departamentos(self, col:str, ciudad_o_departamento:str):
+        """Método para corregir nombres de ciudades o departamentos
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+            ciudad_odepartamento (str): Ciudad o Departamento, dependiendo de columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los valores corregidos"""
+        
+        # Reemplaza filas vacías con ' '
+        self.df[col] = self.df[col].fillna('')
+              
+        # Extrae palabras de las filas. Símbolos y números son excuídos
+        regex_pattern = r'\b[A-Za-zÀ-ÿ]+\b'
+        resultados = []
+
+        for valor in self.df[col]:
+            matches = re.findall(regex_pattern, str(valor), re.UNICODE)
+            resultado = ' '.join(matches)
+            resultados.append(resultado.title())
+        
+        # Reemplaza la columna con los valores extraídos
+        self.df[col] = resultados
+
+        # Reemplaza tíldes por la misma letra sin tílde
+        self.df[col] = self.df[col].apply(unidecode)
