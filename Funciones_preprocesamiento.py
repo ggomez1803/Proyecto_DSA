@@ -226,3 +226,251 @@ class Preprocesamiento_Donantes:
 
         # Reemplaza tíldes por la misma letra sin tílde
         self.df[col] = self.df[col].apply(unidecode)
+
+# Lista de reemplazos para cada ciudad o departamento
+        reemplazos_ciudades = [
+            (r'Aguazul\s?\w+', 'Aguazul'),
+            (r'Agustin\s?Co\w+', 'Agustín Codazzi'),
+            (r'Alta\sM\w+', 'Altamira'),
+            (r'Aranzazu\s?\w+', 'Aranzazu'),
+            (r'Armenia\s?\w+', 'Armenia'),
+            (r'Armero\s?\w+', 'Armero'),
+            (r'Barranca\s?\w+', 'Barrancabermeja'),
+            (r'Bar(r)?[iar]\w+la.*', 'Barranquilla'),
+            (r'(\w+\s)?Bello(\s\w+)?', 'Bello'),
+            (r'Bela[ln]ca[zs]ar(\w+)?', 'Belalcazar'),
+            (r'Bo[gb]?[oa]\w+.*', 'Bogotá'),
+            (r'(Teusaquillo|Suba|Kennedy|Ciudad Bolivar)', 'Bogotá'),
+            (r'Bu[ca][car]\w+(ga|ag).*', 'Bucaramanga'),
+            (r'Buena\s?[Vv]\w+ra', 'Buenaventura'),
+            (r'Carmen Del? [VB]\w+ral?', 'Carmen de Viboral'),
+            (r'Ca[rs]?t[ae]gena.*', 'Cartagena'),
+            (r'Cajii?ca.*', 'Cajicá'),
+            (r'.*\bCali\b.*', 'Cali'),
+            (r'.*\bCucu\w?ta\b.*', 'Cúcuta'),
+            (r'.*Mani[zs]ale[zs].*', 'Manizales'),
+            (r'.*\bMedel.*', 'Medellín'),
+            (r'Ibagu?e', 'Ibagué'),
+            (r'.*Pereira', 'Pereira'),
+            (r'San\s?a?([Tt]a)?\s?[Mm]\w+ta', 'Santa Marta'),
+            (r'.*Pasto\b.*', 'Pasto'),
+            (r'.*Monter[ i][Aa]\b.*', 'Montería'),
+            (r'.*Tunja\b.*', 'Tunja'),
+            (r'.*Rioh?acha\b.*', 'Riohacha'),
+            (r'Sangil', 'San Gil'),
+            (r'.*Palmira\b.*', 'Palmira'),
+            (r'.*Faca[ct]\w+a\b.*', 'Facatativá'),
+            (r'.*Madri[dr]', 'Madrid'),
+            (r'.*Chia\b.*', 'Chía'),
+            (r'.*Cajica\b.*', 'Cajicá'),
+            (r'.*Pie\s?[dD]e\s?[cCs].*', 'Piedecuesta'),
+            (r'\w*\s*Neiva', 'Neiva'),
+            (r'San Andres\b.*', 'San Andrés'),
+            (r'.*Fusa\w*\b.*', 'Fusagasugá'),
+            (r'Villa\w+cio[\s\w]*', 'Villavicencio'),
+            (r'.*Yumbo', 'Yumbo'),
+            (r'Zipa[rq]\w+', 'Zipaquira')
+        ]
+
+        reemplazos_departamentos = [
+            (r'.*Atlantico\b.*', 'Atlántico'),
+            (r'.*Bolivar\b.*', 'Bolívar'),
+            (r'.*Boyaca\b.*', 'Boyacá'),
+            (r'.*Caqueta\b.*', 'Caquetá'),
+            (r'.*Choco\b.*', 'Chocó'),
+            (r'.*Cordoba\b.*', 'Córdoba'),
+            (r'.*Guainia\b.*', 'Guainía'),
+            (r'.*Narino\b.*', 'Nariño'),
+            (r'.*Quindio\b.*', 'Quindío'),
+            (r'.*San Andres Y Providencia\b.*', 'San Andrés Y Providencia'),
+            (r'.*Vaupes\b.*', 'Vaupés'),
+        ]
+
+        # Itera sobre los reemplazos dependiendo de si se reemplazan ciudades o departamentos
+        if ciudad_o_departamento == 'Ciudad':
+            for pattern, replacement in reemplazos_ciudades:
+                self.df[col] = self.df[col].str.replace(pattern, replacement, regex=True)
+        
+        elif ciudad_o_departamento == 'Departamento':
+            for pattern, replacement in reemplazos_departamentos:
+                self.df[col] = self.df[col].str.replace(pattern, replacement, regex=True)
+
+        # Retornar el DataFrame
+        return self.df
+    
+
+
+# Método constructor de la clase que preprocesa las transacciones de los donantes
+class Preprocesamiento_Transacciones:
+    """Clase para el preprocesamiento de los datos"""
+    # Método constructor de la clase
+    def __init__(self, df: pd.DataFrame):
+        """Constructor de la clase"""
+        self.df = df
+
+    # Método para validar si existen textos en las columnas de fechas
+    def texto_en_fechas(self, col:str):
+        """Método para validar si existen textos en las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        
+        # Obtener valores que no coincidan con una fecha
+        df_error = self.df[col].str.contains(r'[Aa-zZ]', regex=True)
+        # Llenar los valores faltantes con False
+        df_error.fillna(False, inplace=True)
+        # Los valores falsos son los correctos y se deben conservar
+        df_conservar = df_error[df_error == False]
+        df_conservar.replace(False, True, inplace=True)
+        df_conservar = pd.DataFrame(df_conservar)
+        # Filtrar el df original con los valores correctos
+        self.df = self.df[self.df.index.isin(df_conservar.index)]
+
+        return self.df, df_error[df_error == True]
+
+    # Método para ajustar los nombres y tipos de las columnas
+    def ajustar_nombre_y_tipo_columnas(self, col:str, n_col:str, tipo:str):
+        """Método para ajustar los nombres y tipos de las columnas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+            n_col (str): Nombre de la nueva columna
+            tipo (str): Tipo de dato a convertir --> 'int', 'float', 'datetime', 'bool'
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos al tipo de dato y nombre de columna deseado"""
+        # Cambiar tipo de columna
+        self.df[col] = self.df[col].astype(tipo)
+        # Renombrar columna
+        self.df.rename(columns={col:n_col}, inplace=True)
+
+        return self.df
+
+    # Método para corregir las columnas de fechas
+    def corregir_fechas(self, col:str, n_col:str, return_errors: bool=False):
+        """Método para corregir las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+            n_col (str): Nombre de la nueva columna
+            return_errors (bool, optional): Si es True, retorna los valores que no coincidan con una fecha. Defaults to False.
+            Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        # Obtener valores que no coincidan con una fecha
+        self.df, df_error = self.texto_en_fechas(col)
+
+        # Convertir la columna Fecha a datetime
+        self.df[col] = pd.to_datetime(self.df[col], errors='coerce', dayfirst=True)
+
+        # Renombrar columna
+        self.df.rename(columns={col:n_col}, inplace=True)
+
+        # Retornar el DataFrame
+        if len(df_error) > 0:
+            if return_errors:
+                return self.df, df_error
+        else:
+            return self.df
+
+    # Método para reemplazar unidades decimales
+    def corregir_decimales(self, col:str):
+        """Método para validar si existen textos en las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        
+        # Reemplaza "," por "." para adaptarse al formato deseado
+        self.df[col] = self.df[col].str.replace(',', '.')
+
+        return self.df
+
+
+# Método constructor de la clase que preprocesa las cancelaciones
+class Preprocesamiento_Cancelaciones:
+    """Clase para el preprocesamiento de los datos"""
+    # Método constructor de la clase
+    def __init__(self, df: pd.DataFrame):
+        """Constructor de la clase"""
+        self.df = df
+
+    # Método para reemplazar unidades decimales
+    def corregir_decimales(self, col:str):
+        """Método para validar si existen textos en las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        
+        # Reemplaza "," por "." para adaptarse al formato deseado
+        self.df[col] = self.df[col].str.replace(',', '.')
+
+        return self.df
+    
+    # Método para validar si existen textos en las columnas de fechas
+    def texto_en_fechas(self, col:str):
+        """Método para validar si existen textos en las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        
+        # Obtener valores que no coincidan con una fecha
+        df_error = self.df[col].str.contains(r'[Aa-zZ]', regex=True)
+        # Llenar los valores faltantes con False
+        df_error.fillna(False, inplace=True)
+        # Los valores falsos son los correctos y se deben conservar
+        df_conservar = df_error[df_error == False]
+        df_conservar.replace(False, True, inplace=True)
+        df_conservar = pd.DataFrame(df_conservar)
+        # Filtrar el df original con los valores correctos
+        self.df = self.df[self.df.index.isin(df_conservar.index)]
+
+        return self.df, df_error
+
+    # Método para corregir las columnas de fechas
+    def corregir_fechas(self, col:str, n_col:str, return_errors: bool=False):
+        """Método para corregir las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+            n_col (str): Nombre de la nueva columna
+            return_errors (bool, optional): Si es True, retorna los valores que no coincidan con una fecha. Defaults to False.
+            Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        # Obtener valores que no coincidan con una fecha
+        self.df, df_error = self.texto_en_fechas(col)
+
+        # Convertir la columna Fecha a datetime
+        self.df[col] = pd.to_datetime(self.df[col], errors='coerce', dayfirst=True)
+
+        # Renombrar columna
+        self.df.rename(columns={col:n_col}, inplace=True)
+
+        # Retornar el DataFrame
+        if len(df_error) > 0:
+            if return_errors:
+                return self.df, df_error
+        else:
+            return self.df
+    
+    # Método para ajustar los nombres y tipos de las columnas
+    def ajustar_nombre_y_tipo_columnas(self, col:str, n_col:str, tipo:str):
+        """Método para ajustar los nombres y tipos de las columnas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de las transacciones
+            col (str): Nombre de la columna a revisar
+            n_col (str): Nombre de la nueva columna
+            tipo (str): Tipo de dato a convertir --> 'int', 'float', 'datetime', 'bool'
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos al tipo de dato y nombre de columna deseado"""
+        # Cambiar tipo de columna
+        self.df[col] = self.df[col].astype(tipo)
+        # Renombrar columna
+        self.df.rename(columns={col:n_col}, inplace=True)
+
+        return self.df
