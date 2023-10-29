@@ -124,3 +124,44 @@ class Preprocesamiento_Donantes:
         else:
             print('No hay errores en la columna Cantidad de Hijos')
             return self.df
+         # Método para corregir la columna Tiene Hijos
+    def corregir_tiene_hijos(self):
+        """Método para corregir la columna Tiene Hijos
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de los donantes
+        Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en boolean"""
+
+        # Remover registros menores de edad
+        self.df['CD_Tiene_Hijos'] = np.where(self.df['VL_Num_Hijos']>0, 'Si', 'No')
+
+        # Convertir la columna Tiene Hijos a boolean
+        self.df['CD_Tiene_Hijos'] = np.where(self.df['CD_Tiene_Hijos']=='Si', True, False)
+        
+        return self.df
+        
+    # Método para corregir las columnas de fechas
+    def corregir_fechas(self, col:str, n_col:str, return_errors: bool=False):
+        """Método para corregir las columnas de fechas
+        Args:
+            df (pd.DataFrame): DataFrame con los datos de los donantes
+            col (str): Nombre de la columna a revisar
+            n_col (str): Nombre de la nueva columna
+            return_errors (bool, optional): Si es True, retorna los valores que no coincidan con una fecha. Defaults to False.
+            Returns:
+            pd.DataFrame: DataFrame con los valores convertidos en fecha"""
+        # Obtener valores que no coincidan con una fecha
+        self.df, df_error = self.texto_en_fechas(col)
+
+        # Convertir la columna Fecha de Nacimiento a datetime
+        self.df[col] = pd.to_datetime(self.df[col], errors='coerce')
+
+        # Renombrar columna
+        self.df.rename(columns={col:n_col}, inplace=True)
+
+        # Retornar el DataFrame
+        if len(df_error) > 0:
+            if return_errors:
+                return self.df, df_error
+        else:
+            return self.df
