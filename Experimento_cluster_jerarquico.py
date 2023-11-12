@@ -36,7 +36,7 @@ tipo_transacciones['Canales_Donacion'] = tipo_transacciones.apply(lambda x: np.c
 # Calcular el canal principal de donación
 tipo_transacciones['Canal_Principal'] = tipo_transacciones.apply(lambda x: x.idxmax(), axis=1)
 # Agregar variables a la tabla de donantes
-lfv = pd.merge(lfv, df_donantes[['ID_Donante', 'FK_ID_Genero', 'FK_ID_Estado_Civil']], on='ID_Donante', how='left')
+lfv = pd.merge(lfv, df_donantes[['ID_Donante', 'T_Conversion', 'FK_ID_Genero', 'FK_ID_Estado_Civil']], on='ID_Donante', how='left')
 lfv = pd.merge(lfv, tipo_transacciones[['Canales_Donacion', 'Canal_Principal']], left_on='ID_Donante', right_on= 'FK_ID_Donante', how='left')
 
 # Calcular el rango IQR para la variable DLTV
