@@ -84,6 +84,13 @@ with mlflow.start_run(experiment_id=experiment.experiment_id):
   
     # Registrar métricasw en mlflow
     mlflow.log_metric("n_clusters", n_clusters)
+    mlflow.log_metric("cluster_size", cluster_size)
+    mlflow.log_metric("cluster_pct", cluster_pct)
+    mlflow.log_metric("cluster_dltv", cluster_dltv)
+    mlflow.log_metric("cluster_cuotas_pagadas", cluster_cuotas_pagadas)
+    mlflow.log_metric("cluster_cuotas_no_pagadas", cluster_cuotas_no_pagadas)
+    mlflow.log_metric("cluster_edad", cluster_edad)
+    mlflow.log_metric("cluster_churn", cluster_churn)
 
     print(f'El número de clusters es {n_clusters}')
     print(f'El tamaño de los clusters es {cluster_size}')
