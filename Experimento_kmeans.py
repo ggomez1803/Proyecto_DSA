@@ -46,12 +46,13 @@ print(lfv.columns)
 # Calcular el rango IQR para la variable DLTV
 donaciones_sin_outlier, outliers = calcular_outliers(lfv, 'DLTV')
 
+mlflow.set_tracking_uri('http://3.83.143.68:8080/')
 experiment = mlflow.set_experiment("exp_kmeans")
 
 with mlflow.start_run(experiment_id=experiment.experiment_id):
     # Definir variables a utilizar
     model_cols = ['DLTV', 'VL_Edad', 'VL_NChurn']
-    k = 4    
+    k = 5    
 
     # Variables a evaluar
     df_segmentado, kmeans_model = obtener_clusters(donaciones_sin_outlier, model_cols, k)
