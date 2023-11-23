@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-import graphviz
-from sklearn import tree
 from sklearn.metrics import silhouette_score, accuracy_score
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier, plot_importance
@@ -160,35 +158,3 @@ def calcular_outliers(df: pd.DataFrame, col:str):
     print(f'Se encontraron {len(outliers)} outliers en la variable {col} con un límite inferior de {lower} y un límite superior de {upper}')
     print(f'Se analizará una base con {len(no_outliers)} registros')
     return no_outliers, outliers
-
-# Función para construir un árbol de decisión basado en el modelo de segmentación
-def construir_arbol(df: pd.DataFrame, model_cols: list):
-    """ Construye un árbol de decisión basado en el modelo de segmentación
-    Args:
-        df (DataFrame): Dataset a utilizar
-        model_cols (list): Lista de columnas a utilizar
-    Returns:
-        graphviz.Source: Árbol de decisión"""
-    # Crear clasificador de árbol de decisión
-    clf = tree.DecisionTreeClassifier(max_depth=4)
-
-    # Partir dataset en prueba y entrenamiento
-    X = df[model_cols]
-    y = df['cluster']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=123)
-
-    # Train Decision Tree Classifer
-    clf = clf.fit(X_train,y_train)
-
-    #Predict the response for test dataset
-    y_pred = clf.predict(X_test)
-
-    # DOT data
-    dot_data = tree.export_graphviz(clf, out_file=None, 
-                                    feature_names=model_cols,  
-                                    class_names=["0","1","2","3","4"],
-                                    filled=True)
-
-    # Draw graph
-    graph = graphviz.Source(dot_data, format="png") 
-    return graph

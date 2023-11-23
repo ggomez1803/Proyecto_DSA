@@ -20,7 +20,7 @@ df_transacciones = df_transacciones[df_transacciones['FK_CD_Registro'].isin(dona
 
 # Tabla resumen de transacciones por donante y año
 donaciones_anuales = pd.pivot_table(df_transacciones, values='VL_Importe', index='FK_ID_Donante', columns=['Anio_Donacion'], aggfunc='sum', fill_value=0)
-print(df_donantes[df_donantes['ID_Donante'] == 1020483945][['ID_Donante', 'VL_Lifespan', 'VL_Churn_Prob']])
+#print(df_donantes[df_donantes['ID_Donante'] == 1020483945][['ID_Donante', 'VL_Lifespan', 'VL_Churn_Prob']])
 
 acumulado = 0
 # Calcular el valor presente acumulado
