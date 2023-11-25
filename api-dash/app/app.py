@@ -87,20 +87,16 @@ app.layout = html.Div(
                 )
             ],
         ),
+
+        # Add prediction section
         html.Div(
-            id="app-container",
+            id="prediction-card",
             children=[
-                # Add prediction section
-                html.Div(
-                id="prediction-card",
-                children=[
-                    html.H2("Predicción del segmento"),
-                    html.P("El donante pertenece al cluster:"),
-                    html.Div(id="predicted-cluster"),
-                ],
-                ),
+                html.H2("Predicción del segmento"),
+                html.P("El donante pertenece al cluster:"),
+                html.Div(id="predicted-cluster"),
             ],
-        )
+        ),
     ],
 )
 
