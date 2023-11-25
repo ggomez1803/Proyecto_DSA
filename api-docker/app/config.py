@@ -8,7 +8,7 @@ from pydantic import AnyHttpUrl, BaseSettings
 
 # Nivel del logger
 class LoggingSettings(BaseSettings):
-    LOGGING_LEVEL: int = logging.INFO  # logging levels are type int
+    LOGGING_LEVEL: float = logging.INFO  # logging levels are type float
 
 # Configuración de raíz de la ruta, logger, CORS, nombre 
 class Settings(BaseSettings):
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
         "https://localhost:8000",  # type: ignore
     ]
 
-    PROJECT_NAME: str = "Banckchurn API"
+    PROJECT_NAME: str = "API Proyecto Proyección Infantil"
 
     class Config:
         case_sensitive = True
