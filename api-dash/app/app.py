@@ -22,7 +22,7 @@ server = app.server
 app.config.suppress_callback_exceptions = True
 
 # Cargar modelo de segmentación
-modelo_seg = joblib.load('modelo_segmentacion.pkl')
+modelo_seg = joblib.load('/opt/app/modelo_segmentacion.pkl')
 
 # Función para escalar datos
 def scale_data(data):
