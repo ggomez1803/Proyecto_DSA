@@ -87,18 +87,35 @@ app.layout = html.Div(
                 )
             ],
         ),
+        html.Div(
+            id="app-container",
+            children=[
+                # Add prediction section
+                html.Div(
+                id="prediction-card",
+                children=[
+                    html.H2("Predicción del segmento"),
+                    html.P("El donante pertenece al cluster:"),
+                    html.Div(id="predicted-cluster"),
+                ],
+                ),
+            ],
+        )
     ],
 )
 
 # Method to update prediction
 @app.callback(
     [Output(component_id='resultado', component_property='children'),
-    Output(component_id='plot_series', component_property='figure')],
+    Output(component_id='plot_series', component_property='figure'),
+    Output(component_id='predicted-cluster', component_property='children')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value')]
 )
 def update_output_div(fuga, efect, dltv):
+    figure = None
+    document = None
     myreq = {
         "inputs": [
             {
@@ -132,9 +149,18 @@ def update_output_div(fuga, efect, dltv):
         cluster = "No se puede clasificar"
 
     result = f'El donante pertenece al cluster: {cluster}'
-    
-    return result 
+    logger.info("Result: {}".format(result))
 
+    predicted_cluster_display = f"Pertenece al cluster: {cluster}"
+    # Update figure
+    figure = dcc.Graph(
+    id="plot_series",
+    figure=figure,
+    style={"height": "100%", "width": "100%"},
+    config={"displayModeBar": False})
+
+    document.getElementById('predicted-cluster').innerHTML = predicted_cluster_display
+    return result, figure, predicted_cluster_display
  
 
 # Run the server
