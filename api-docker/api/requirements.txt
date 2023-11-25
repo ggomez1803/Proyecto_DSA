@@ -71,3 +71,4 @@ urllib3==2.0.5
 wcwidth==0.2.6
 xgboost==2.0.0
 uvicorn==0.24.0
+fastapi==0.104.1
