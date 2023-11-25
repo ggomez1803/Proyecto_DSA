@@ -19,8 +19,8 @@ class MultipleDataInputs(BaseModel):
                 "inputs": [
                     {
                         "Churn": 0.01,
-                        "Efectividad de cobro": 0.98,
-                        "Donor life time value": 2000000,
+                        "Efectividad_cobro": 0.98,
+                        "DLTV": 2000000,
                     }
                 ]
             }
