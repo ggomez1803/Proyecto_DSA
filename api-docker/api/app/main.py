@@ -141,25 +141,6 @@ def index(request: Request) -> Any:
     return HTMLResponse(content=body)
 
 
-app.include_router(api_router, prefix=API_V1_STR)
-app.include_router(root_router)
-BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        "http://localhost:3000",  # type: ignore
-        "http://localhost:8000",  # type: ignore
-        "https://localhost:3000",  # type: ignore
-        "https://localhost:8000",  # type: ignore
-    ]
-# Set all CORS enabled origins
-if BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
-
 if __name__ == "__main__":
     # Use this for debugging purposes only
     logger.warning("Running in development mode. Do not run like this in production.")
@@ -218,38 +199,8 @@ class Health(BaseModel):
     name: str
     api_version: str
     model_version: str
-# Ruta para verificar que la API se esté ejecutando correctamente
-@api_router.get("/health", response_model=Health, status_code=200)
-def health() -> dict:
-    """
-    Root Get
-    """
-    health = Health(
-        name="Proyecto Segmentacion", api_version="0.0.1", model_version=model_version
-    )
-
-    return health.dict()
-
-# Ruta para realizar las predicciones
-@api_router.post("/predict", response_model=PredictionResults, status_code=200)
-async def predict(input_data: MultipleDataInputs) -> Any:
-    """
-    Prediccion usando el modelo de segmentación
-    """
-
-    input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
-
-    logger.info(f"Making prediction on inputs: {input_data.inputs}")
-    results = make_prediction(input_data=input_df.replace({np.nan: None}))
-
-    if results["errors"] is not None:
-        logger.warning(f"Prediction validation error: {results.get('errors')}")
-        raise HTTPException(status_code=400, detail=json.loads(results["errors"]))
-
-    logger.info(f"Prediction results: {results.get('predictions')}")
-
-    return results
-
+    
+#load pipeline
 def load_pipeline(*, file_name: str) -> Pipeline:
     """Load a persisted pipeline."""
 
@@ -291,7 +242,23 @@ def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional
 
 
 
-
+app.include_router(api_router, prefix=API_V1_STR)
+app.include_router(root_router)
+BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
+        "http://localhost:3000",  # type: ignore
+        "http://localhost:8000",  # type: ignore
+        "https://localhost:3000",  # type: ignore
+        "https://localhost:8000",  # type: ignore
+    ]
+# Set all CORS enabled origins
+if BACKEND_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in BACKEND_CORS_ORIGINS],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 pipeline_file_name = "modelo_segmentacion.pkl"
