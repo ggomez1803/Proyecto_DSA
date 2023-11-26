@@ -209,23 +209,17 @@ def health() -> dict:
 
 # Ruta para realizar las predicciones
 @api_router.post("/predict", response_model=PredictionResults, status_code=200)
-async def predict(input_data: MultipleDataInputs) -> Any:
+async def predict(input_data: Dict) -> Any:
     """
     Prediccion usando el modelo de segmentación
     """
-    print(input_data)
+    #print(input_data)
     #input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
 
-    input_data2 =[
-                    {
-                        "Churn": 0.01,
-                        "Efectividad_cobro": 0.98,
-                        "DLTV": 2000000,
-                    }
-                ]
+   
 
    # logger.info(f"Making prediction on inputs: {input_data.inputs}")
-    results = make_prediction(input_data=input_data2)
+    results = make_prediction(input_data=input_data["inputs"])
     
     if results["errors"] is not None:
         logger.warning(f"Prediction validation error: {results.get('errors')}")
