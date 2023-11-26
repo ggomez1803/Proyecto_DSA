@@ -226,9 +226,9 @@ async def predict(input_data: MultipleDataInputs) -> Any:
     logger.info(f"Making prediction on inputs: {input_data.inputs}")
     results = make_prediction(input_data=input_df.replace({np.nan: None}))
 
-    #if results["errors"] is not None:
-    #    logger.warning(f"Prediction validation error: {results.get('errors')}")
-    #    raise HTTPException(status_code=400, detail=json.loads(results["errors"]))
+    if results["errors"] is not None:
+        logger.warning(f"Prediction validation error: {results.get('errors')}")
+        raise HTTPException(status_code=400, detail=json.loads(results["errors"]))
 
     logger.info(f"Prediction results: {results.get('predictions')}")
 
@@ -307,7 +307,7 @@ def make_prediction(
     """Make a prediction using a saved model pipeline."""
 
     data = pd.DataFrame(input_data)
-    #validated_data, errors = validate_inputs(input_data=data)
+    validated_data, errors = validate_inputs(input_data=data)
     #results = {"predictions": None, "version": model_version, "errors": errors}
 
     #if not errors:
@@ -319,7 +319,7 @@ def make_prediction(
       #      "version": model_version,
       #      "errors": errors,
       #  }
-    results = {"predictions": None, "errors": None}
+    results = {"predictions": None, "errors": errors}
     data['DLTV_std'] = StandardScaler().fit_transform(data[['DLTV']])
     data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(data[['Churn']])
     data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
