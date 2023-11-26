@@ -25,10 +25,10 @@ app.config.suppress_callback_exceptions = True
 modelo_seg = joblib.load('/opt/app/modelo_segmentacion.pkl')
 
 # Función para escalar datos
-def scale_data(data):
-    scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(data)
-    return scaled_data
+#def scale_data(data):
+#    scaler = StandardScaler()
+#    scaled_data = scaler.fit_transform(data)
+#    return scaled_data
 
 # Predicción de cluster
 #def predict_cluster(fuga, efect, dltv):
@@ -106,7 +106,6 @@ def update_output_div(fuga, efect, dltv, n_clicks):
     # Inicializa el resultado y la figura
     result = None
     figure = None
-    predicted_cluster_display = None
 
     # Realiza la llamada al API solo cuando el botón ha sido clicado
     if n_clicks > 0:
@@ -129,15 +128,15 @@ def update_output_div(fuga, efect, dltv, n_clicks):
 
         cluster = ""
 
-        if data["predictions"][0] == 0:
+        if data["predictions"] == 0:
             cluster = "Campeones"
-        elif data["predictions"][0] == 1:
+        elif data["predictions"] == 1:
             cluster = "Comprometidos"
-        elif data["predictions"][0] == 2:
+        elif data["predictions"] == 2:
             cluster = "Hibernando"
-        elif data["predictions"][0] == 3:
+        elif data["predictions"] == 3:
             cluster = "En riesgo"
-        elif data["predictions"][0] == 4:
+        elif data["predictions"] == 4:
             cluster = "En fuga"
         else:
             cluster = "No se puede clasificar"
@@ -145,13 +144,13 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         result = f'El donante pertenece al cluster: {cluster}'
         logger.info("Result: {}".format(result))
 
-    # Actualiza la figura (puedes agregar tu lógica aquí para la gráfica)
-    figure = dcc.Graph(
-        id="plot_series",
-        figure=figure,
-        style={"height": "100%", "width": "100%"},
-        config={"displayModeBar": False}
-    )
+        # Actualiza la figura
+        figure = dcc.Graph(
+            id="plot_series",
+            figure=figure,
+            style={"height": "100%", "width": "100%"},
+            config={"displayModeBar": False}
+        )
 
     return result, figure
  
