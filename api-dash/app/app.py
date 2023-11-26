@@ -128,15 +128,15 @@ def update_output_div(fuga, efect, dltv, n_clicks):
 
         cluster = ""
 
-        if data["predictions"] == 0:
+        if data["predictions"][0] == 0:
             cluster = "Campeones"
-        elif data["predictions"] == 1:
+        elif data["predictions"][0] == 1:
             cluster = "Comprometidos"
-        elif data["predictions"] == 2:
+        elif data["predictions"][0] == 2:
             cluster = "Hibernando"
-        elif data["predictions"] == 3:
+        elif data["predictions"][0] == 3:
             cluster = "En riesgo"
-        elif data["predictions"] == 4:
+        elif data["predictions"][0] == 4:
             cluster = "En fuga"
         else:
             cluster = "No se puede clasificar"

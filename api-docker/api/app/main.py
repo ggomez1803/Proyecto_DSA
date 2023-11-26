@@ -321,9 +321,9 @@ def make_prediction(
       #      "errors": errors,
       #  }
     #results = {"predictions": None, "errors": errors}
-    validated_data['DLTV_std'] = StandardScaler().fit_transform(data[['DLTV']])
-    validated_data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(data[['Churn']])
-    validated_data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
+    validated_data['DLTV_std'] = StandardScaler().fit_transform(validated_data[['DLTV']])
+    validated_data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(validated_data[['Churn']])
+    validated_data['Efectividad_cobro_std'] = StandardScaler().fit_transform(validated_data[['Efectividad_cobro']])
     # Realizar predicción
     cluster = modelo_segmentacion.predict(validated_data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
     results = {"predictions": [pred for pred in cluster], "errors": errors}
