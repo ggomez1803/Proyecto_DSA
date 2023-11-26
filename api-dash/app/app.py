@@ -136,6 +136,7 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         response = requests.post(api_url, data=json.dumps(myreq), headers=headers)
         data = response.json()
         logger.info("Response: {}".format(data))
+        print(logger.info("Response: {}".format(data)))
 
         # Pick result to return from json format
         cluster = predict_cluster(float(fuga), float(efect), float(dltv))
