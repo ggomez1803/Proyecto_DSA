@@ -325,5 +325,5 @@ def make_prediction(
     data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
     # Realizar predicción
     cluster = modelo_segmentacion.predict(data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
-    results = {"predictions": [pred for pred in cluster]}
+    results = {"predictions": [pred for pred in cluster], "errors": errors}
     return results
