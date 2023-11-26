@@ -321,20 +321,19 @@ def make_prediction(
       #      "errors": errors,
       #  }
     #results = {"predictions": None, "errors": errors}
-    validated_data['DLTV_std'] = StandardScaler().fit_transform(validated_data[['DLTV']])
-    validated_data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(validated_data[['Churn']])
-    validated_data['Efectividad_cobro_std'] = StandardScaler().fit_transform(validated_data[['Efectividad_cobro']])
+    #validated_data['DLTV_std'] = StandardScaler().fit_transform(validated_data[['DLTV']])
+    #validated_data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(validated_data[['Churn']])
+    #validated_data['Efectividad_cobro_std'] = StandardScaler().fit_transform(validated_data[['Efectividad_cobro']])
+    
     # Realizar predicción
-    cluster = modelo_segmentacion.predict(validated_data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
+    #cluster = modelo_segmentacion.predict(validated_data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
+    cluster = modelo_segmentacion.predict(validated_data[['DLTV', 'Churn', 'Efectividad_cobro']])
+
     print(f'Se recibe el DLTV: {validated_data["DLTV"]}')
     print(f'Se recibe el Churn: {validated_data["Churn"]}')
     print(f'Se recibe el Efectividad_cobro: {validated_data["Efectividad_cobro"]}')
 
-    print(f'Se transforma el DLTV: {validated_data["DLTV_std"]}')
-    print(f'Se transforma el Churn: {validated_data["VL_Churn_Prob_std"]}')
-    print(f'Se transforma el Efectividad_cobro: {validated_data["Efectividad_cobro_std"]}')
-
     print(f'Se predice el cluster: {cluster}')
-    
+
     results = {"predictions": [pred for pred in cluster], "errors": errors}
     return results
