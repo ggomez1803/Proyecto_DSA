@@ -63,12 +63,12 @@ app.layout = html.Div(
             id="control-card",
             children=[
                 # Nuevos campos de entrada para DLTV y Fuga
-                html.H6("Ingrese la información del donante:"),
+                html.H3("Ingrese la información del donante:"),
                 html.Div(["Probabilidad de fuga del donante: ",
                           dcc.Input(id='fuga', value='0', type='number')]),
                 html.Br(),
                 html.Div(["Donor lifetime value del donante: ",
-                          dcc.Input(id='dltv', value='35000', type='number')]),
+                          dcc.Input(id='dltv', value='350000', type='number')]),
                 html.Br(),
                 html.Div(["Efectividad de cobro: ",
                           dcc.Input(id='efect', value='0', type='number')]),
@@ -96,7 +96,6 @@ app.layout = html.Div(
             id="prediction-card",
             children=[
                 html.H2("Predicción del segmento"),
-                html.P("El donante pertenece al cluster:"),
                 html.Div(id="predicted-cluster"),
             ],
         ),
@@ -124,9 +123,9 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         myreq = {
             "inputs": [
                 {
-                    "Churn": int(fuga),
-                    "Efectividad_cobro": int(efect),
-                    "DLTV": int(dltv)
+                    "Churn": float(fuga),
+                    "Efectividad_cobro": float(efect),
+                    "DLTV": float(dltv)
                 }
             ]
         }
@@ -156,8 +155,6 @@ def update_output_div(fuga, efect, dltv, n_clicks):
 
         result = f'El donante pertenece al cluster: {cluster}'
         logger.info("Result: {}".format(result))
-
-        predicted_cluster_display = f"Pertenece al cluster: {cluster}"
 
     # Actualiza la figura (puedes agregar tu lógica aquí para la gráfica)
     figure = dcc.Graph(
