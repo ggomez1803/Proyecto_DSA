@@ -140,23 +140,10 @@ def index(request: Request) -> Any:
 
     return HTMLResponse(content=body)
 
-
-
-
-
-
-
- 
 #from model import __version__ as model_version
 #from model.predict import make_prediction
 #from model.processing.data_manager import load_pipeline
 #from model.processing.validation import validate_inputs
-
-
-
-
-
-
 
 class DataInputSchema(BaseModel):
     Churn: Optional[float]
@@ -332,6 +319,5 @@ def make_prediction(
 
     print(f'Se predice el cluster: {cluster}')
 
-    results = {"predictions": [pred for pred in cluster], "errors": errors}
+    results = {"predictions": [pred for pred in cluster], "errors": None}
     return results
-
