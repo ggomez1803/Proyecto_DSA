@@ -178,7 +178,6 @@ class MultipleDataInputs(BaseModel):
 # Esquema de los resultados de predicción
 class PredictionResults(BaseModel):
     errors: Optional[Any]
-    version: str
     predictions: Optional[List[float]]
 
 # Esquema para inputs múltiples
@@ -225,7 +224,7 @@ async def predict(input_data: MultipleDataInputs) -> Any:
 
     logger.info(f"Making prediction on inputs: {input_data.inputs}")
     results = make_prediction(input_data=input_df.replace({np.nan: None}))
-
+    
     if results["errors"] is not None:
         logger.warning(f"Prediction validation error: {results.get('errors')}")
         raise HTTPException(status_code=400, detail=json.loads(results["errors"]))
