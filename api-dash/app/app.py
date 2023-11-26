@@ -144,13 +144,13 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         result = f'El donante pertenece al cluster: {cluster}'
         logger.info("Result: {}".format(result))
 
-        # Actualiza la figura
-        figure = dcc.Graph(
-            id="plot_series",
-            figure=figure,
-            style={"height": "100%", "width": "100%"},
-            config={"displayModeBar": False}
-        )
+    # Actualiza la figura
+    figure = dcc.Graph(
+        id="plot_series",
+        figure=figure,
+        style={"height": "100%", "width": "100%"},
+        config={"displayModeBar": False}
+    )
 
     return result, figure
  
