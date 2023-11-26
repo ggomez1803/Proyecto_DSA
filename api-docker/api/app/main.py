@@ -144,13 +144,7 @@ def index(request: Request) -> Any:
 
 
 
-if __name__ == "__main__":
-    # Use this for debugging purposes only
-    logger.warning("Running in development mode. Do not run like this in production.")
-    import uvicorn
 
-    # ejecución del servidor - host para ejecutar en servidor 
-    uvicorn.run(app, host="0.0.0.0", port=8001, log_level="debug")
 
  
 #from model import __version__ as model_version
@@ -219,7 +213,7 @@ async def predict(input_data: MultipleDataInputs) -> Any:
     """
     Prediccion usando el modelo de segmentación
     """
-
+    print(input_data)
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
 
     logger.info(f"Making prediction on inputs: {input_data.inputs}")
@@ -304,7 +298,7 @@ def make_prediction(
     input_data: t.Union[pd.DataFrame, dict],
 ) -> dict:
     """Make a prediction using a saved model pipeline."""
-
+    print(input_data)
     data = pd.DataFrame(input_data)
     validated_data, errors = validate_inputs(input_data=data)
     print(validated_data)
@@ -337,3 +331,4 @@ def make_prediction(
 
     results = {"predictions": [pred for pred in cluster], "errors": errors}
     return results
+
