@@ -301,7 +301,7 @@ def make_prediction(
     input_data: t.Union[pd.DataFrame, dict],
 ) -> dict:
     """Make a prediction using a saved model pipeline."""
-    print(input_data.to_string)
+    print(input_data)
     data = pd.DataFrame(input_data)
     validated_data, errors = validate_inputs(input_data=data)
     print(validated_data)
