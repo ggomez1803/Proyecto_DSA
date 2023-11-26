@@ -303,9 +303,9 @@ def make_prediction(
     """Make a prediction using a saved model pipeline."""
     print(input_data)
     data = pd.DataFrame(input_data)
-    validated_data, errors = validate_inputs(input_data=data)
-    print(validated_data)
-    print(errors)
+   # validated_data, errors = validate_inputs(input_data=data)
+   # print(validated_data)
+   # print(errors)
     #results = {"predictions": None, "version": model_version, "errors": errors}
 
     #if not errors:
@@ -324,11 +324,11 @@ def make_prediction(
     
     # Realizar predicción
     #cluster = modelo_segmentacion.predict(validated_data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
-    cluster = modelo_segmentacion.predict(validated_data[['DLTV', 'Churn', 'Efectividad_cobro']])
+    cluster = modelo_segmentacion.predict(data[['DLTV', 'Churn', 'Efectividad_cobro']])
 
-    print(f'Se recibe el DLTV: {validated_data["DLTV"]}')
-    print(f'Se recibe el Churn: {validated_data["Churn"]}')
-    print(f'Se recibe el Efectividad_cobro: {validated_data["Efectividad_cobro"]}')
+    print(f'Se recibe el DLTV: {data["DLTV"]}')
+    print(f'Se recibe el Churn: {data["Churn"]}')
+    print(f'Se recibe el Efectividad_cobro: {data["Efectividad_cobro"]}')
 
     print(f'Se predice el cluster: {cluster}')
 
