@@ -214,9 +214,9 @@ async def predict(input_data: MultipleDataInputs) -> Any:
     Prediccion usando el modelo de segmentación
     """
     print(input_data)
-    input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
+    #input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
 
-    input_data = [
+    input_data2 =[
                     {
                         "Churn": 0.01,
                         "Efectividad_cobro": 0.98,
@@ -224,8 +224,8 @@ async def predict(input_data: MultipleDataInputs) -> Any:
                     }
                 ]
 
-    logger.info(f"Making prediction on inputs: {input_data.inputs}")
-    results = make_prediction(input_data=input_data)
+   # logger.info(f"Making prediction on inputs: {input_data.inputs}")
+    results = make_prediction(input_data=input_data2)
     
     if results["errors"] is not None:
         logger.warning(f"Prediction validation error: {results.get('errors')}")
