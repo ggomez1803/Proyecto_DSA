@@ -62,9 +62,7 @@ class ModelConfig(BaseModel):
     features: List[str]
     test_size: float
     random_state: int
-    n_estimators: int
-    max_depth: int
-    temp_features: List[str]
+    k: int
     qual_vars: List[str]
     categorical_vars: Sequence[str]
     qual_mappings: Dict[str, int]
