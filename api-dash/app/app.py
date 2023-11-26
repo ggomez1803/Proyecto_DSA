@@ -73,6 +73,9 @@ app.layout = html.Div(
                 html.Div(["Efectividad de cobro: ",
                           dcc.Input(id='efect', value='0', type='number')]),
                 html.Br(),
+                # Botón para activar la predicción
+                html.Button('Realizar Predicción', id='boton-prediccion', n_clicks=0),
+                html.Br(),
                 html.H6(html.Div(id='resultado')),
             ],
         ),
@@ -107,55 +110,62 @@ app.layout = html.Div(
     Output(component_id='predicted-cluster', component_property='children')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
-     Input(component_id='efect', component_property='value')]
+     Input(component_id='efect', component_property='value'),
+     Input('boton-prediccion', 'n_clicks')]
 )
-def update_output_div(fuga, efect, dltv):
+def update_output_div(fuga, efect, dltv, n_clicks):
+    # Inicializa el resultado y la figura
+    result = None
     figure = None
-    document = None
-    myreq = {
-        "inputs": [
-            {
-            "Churn": int(fuga),
-            "Efectividad_cobro": int(efect),
-            "DLTV": int(dltv)
-            }
-        ]
-      }
-    headers =  {"Content-Type":"application/json", "accept": "application/json"}
+    predicted_cluster_display = None
 
-    # POST call to the API
-    response = requests.post(api_url, data=json.dumps(myreq), headers=headers)
-    data = response.json()
-    logger.info("Response: {}".format(data))
+    # Realiza la llamada al API solo cuando el botón ha sido clicado
+    if n_clicks > 0:
+        myreq = {
+            "inputs": [
+                {
+                    "Churn": int(fuga),
+                    "Efectividad_cobro": int(efect),
+                    "DLTV": int(dltv)
+                }
+            ]
+        }
+        headers = {"Content-Type": "application/json", "accept": "application/json"}
 
-    # Pick result to return from json format
-    cluster = predict_cluster(float(fuga), float(efect), float(dltv))
-    
-    if data["predictions"][0] == 0:
-        cluster = "Campeones"
-    elif data["predictions"][0] == 1:
-        cluster = "Comprometidos"
-    elif data["predictions"][0] == 2:
-        cluster = "Hibernando"
-    elif data["predictions"][0] == 3:
-        cluster = "En riesgo"
-    elif data["predictions"][0] == 4:
-        cluster = "En fuga"
-    else:
-        cluster = "No se puede clasificar"
+        # POST call to the API
+        response = requests.post(api_url, data=json.dumps(myreq), headers=headers)
+        data = response.json()
+        logger.info("Response: {}".format(data))
 
-    result = f'El donante pertenece al cluster: {cluster}'
-    logger.info("Result: {}".format(result))
+        # Pick result to return from json format
+        cluster = predict_cluster(float(fuga), float(efect), float(dltv))
 
-    predicted_cluster_display = f"Pertenece al cluster: {cluster}"
-    # Update figure
+        if data["predictions"][0] == 0:
+            cluster = "Campeones"
+        elif data["predictions"][0] == 1:
+            cluster = "Comprometidos"
+        elif data["predictions"][0] == 2:
+            cluster = "Hibernando"
+        elif data["predictions"][0] == 3:
+            cluster = "En riesgo"
+        elif data["predictions"][0] == 4:
+            cluster = "En fuga"
+        else:
+            cluster = "No se puede clasificar"
+
+        result = f'El donante pertenece al cluster: {cluster}'
+        logger.info("Result: {}".format(result))
+
+        predicted_cluster_display = f"Pertenece al cluster: {cluster}"
+
+    # Actualiza la figura (puedes agregar tu lógica aquí para la gráfica)
     figure = dcc.Graph(
-    id="plot_series",
-    figure=figure,
-    style={"height": "100%", "width": "100%"},
-    config={"displayModeBar": False})
+        id="plot_series",
+        figure=figure,
+        style={"height": "100%", "width": "100%"},
+        config={"displayModeBar": False}
+    )
 
-    document.getElementById('predicted-cluster').innerHTML = predicted_cluster_display
     return result, figure, predicted_cluster_display
  
 

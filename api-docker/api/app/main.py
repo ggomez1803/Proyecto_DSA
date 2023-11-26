@@ -1,8 +1,5 @@
 from typing import Any
-
-
 import json
-from typing import Any
 import typing as t
 from typing import List, Optional, Tuple
 
@@ -39,8 +36,6 @@ from strictyaml import YAML, load
 
 
 # Project Directories
-#PACKAGE_ROOT = Path(model.__file__).resolve().parent
-#ROOT = PACKAGE_ROOT.parent
 CONFIG_FILE_PATH = "/opt/api/app/config.yml"
 API_V1_STR: str = "/api/v1"
 
@@ -240,7 +235,7 @@ def health() -> dict:
 @api_router.post("/predict", response_model=PredictionResults, status_code=200)
 async def predict(input_data: MultipleDataInputs) -> Any:
     """
-    Prediccion usando el modelo de bankchurn
+    Prediccion usando el modelo de segmentación
     """
 
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))

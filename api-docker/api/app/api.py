@@ -37,11 +37,6 @@ class DataInputSchema(BaseModel):
     DLTV: Optional[float]
     
 
-
-class MultipleDataInputs(BaseModel):
-    inputs: List[DataInputSchema]
-
-
 # Esquema de los resultados de predicción
 class PredictionResults(BaseModel):
     errors: Optional[Any]
