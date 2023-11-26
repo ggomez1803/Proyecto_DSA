@@ -31,12 +31,12 @@ def scale_data(data):
     return scaled_data
 
 # Predicción de cluster
-def predict_cluster(fuga, efect, dltv):
-    # Escalar datos
-    scaled_input = scale_data(np.array([[fuga, efect, dltv]]))
-    # Realizar predicción
-    cluster_predicho = modelo_seg.predict(scaled_input)
-    return cluster_predicho[0]
+#def predict_cluster(fuga, efect, dltv):
+#    # Escalar datos
+#    scaled_input = scale_data(np.array([[fuga, efect, dltv]]))
+#    # Realizar predicción
+#    cluster_predicho = modelo_seg.predict(scaled_input)
+#    return cluster_predicho[0]
 
 # PREDICTION API URL 
 api_url = os.getenv('API_URL')
@@ -90,23 +90,13 @@ app.layout = html.Div(
                 )
             ],
         ),
-
-        # Add prediction section
-        html.Div(
-            id="prediction-card",
-            children=[
-                html.H2("Predicción del segmento"),
-                html.Div(id="predicted-cluster"),
-            ],
-        ),
     ],
 )
 
 # Method to update prediction
 @app.callback(
     [Output(component_id='resultado', component_property='children'),
-    Output(component_id='plot_series', component_property='figure'),
-    Output(component_id='predicted-cluster', component_property='children')],
+    Output(component_id='plot_series', component_property='figure')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value'),
@@ -137,8 +127,7 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         logger.info("Response: {}".format(data))
         print(logger.info("Response: {}".format(data)))
 
-        # Pick result to return from json format
-        cluster = predict_cluster(float(fuga), float(efect), float(dltv))
+        cluster = ""
 
         if data["predictions"][0] == 0:
             cluster = "Campeones"

@@ -307,6 +307,8 @@ def make_prediction(
 
     data = pd.DataFrame(input_data)
     validated_data, errors = validate_inputs(input_data=data)
+    print(validated_data)
+    print(errors)
     #results = {"predictions": None, "version": model_version, "errors": errors}
 
     #if not errors:
@@ -318,11 +320,11 @@ def make_prediction(
       #      "version": model_version,
       #      "errors": errors,
       #  }
-    results = {"predictions": None, "errors": errors}
-    data['DLTV_std'] = StandardScaler().fit_transform(data[['DLTV']])
-    data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(data[['Churn']])
-    data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
+    #results = {"predictions": None, "errors": errors}
+    validated_data['DLTV_std'] = StandardScaler().fit_transform(data[['DLTV']])
+    validated_data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(data[['Churn']])
+    validated_data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
     # Realizar predicción
-    cluster = modelo_segmentacion.predict(data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
+    cluster = modelo_segmentacion.predict(validated_data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
     results = {"predictions": [pred for pred in cluster], "errors": errors}
     return results
