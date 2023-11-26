@@ -2,6 +2,7 @@ from typing import Any
 import json
 import typing as t
 from typing import List, Optional, Tuple
+from sklearn.preprocessing import StandardScaler
 
 import numpy as np
 import pandas as pd
@@ -296,7 +297,7 @@ def validate_inputs(*, input_data: pd.DataFrame) -> Tuple[pd.DataFrame, Optional
 
 
 pipeline_file_name = "modelo_segmentacion.pkl"
-_abandono_pipe = load_pipeline(file_name=pipeline_file_name)
+modelo_segmentacion = load_pipeline(file_name=pipeline_file_name)
 
 
 def make_prediction(
@@ -306,17 +307,23 @@ def make_prediction(
     """Make a prediction using a saved model pipeline."""
 
     data = pd.DataFrame(input_data)
-    validated_data, errors = validate_inputs(input_data=data)
-    results = {"predictions": None, "version": model_version, "errors": errors}
+    #validated_data, errors = validate_inputs(input_data=data)
+    #results = {"predictions": None, "version": model_version, "errors": errors}
 
-    if not errors:
-        predictions = _abandono_pipe.predict(
-            X=validated_data[config.model_config.features]
-        )
-        results = {
-            "predictions": [pred for pred in predictions], 
-            "version": model_version,
-            "errors": errors,
-        }
-
+    #if not errors:
+    #    predictions = modelo_segmentacion.predict(
+    #        X=validated_data[config.model_config.features]
+    #    )
+     #   results = {
+     #       "predictions": [pred for pred in predictions], 
+      #      "version": model_version,
+      #      "errors": errors,
+      #  }
+    results = {"predictions": None}
+    data['DLTV_std'] = StandardScaler().fit_transform(data[['DLTV']])
+    data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(data[['Churn']])
+    data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
+    # Realizar predicción
+    cluster = modelo_segmentacion.predict(data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
+    results = {"predictions": [pred for pred in cluster]}
     return results
