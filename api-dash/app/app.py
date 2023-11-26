@@ -153,7 +153,7 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         config={"displayModeBar": False}
     )
 
-    return result, figure, predicted_cluster_display
+    return result, figure
  
 
 # Run the server
