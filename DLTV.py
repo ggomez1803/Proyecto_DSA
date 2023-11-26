@@ -23,7 +23,7 @@ donaciones_anuales = pd.pivot_table(df_transacciones, values='VL_Importe', index
 #print(df_donantes[df_donantes['ID_Donante'] == 1020483945][['ID_Donante', 'VL_Lifespan', 'VL_Churn_Prob']])
 
 acumulado = 0
-# Calcular el valor presente acumulado
+##Calcular el valor presente acumulado
 for col in donaciones_anuales.columns:
     acumulado = fdv.acum_value(donaciones_anuales[col], acumulado, df_inflacion)
 
