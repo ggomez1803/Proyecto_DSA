@@ -319,7 +319,7 @@ def make_prediction(
       #      "version": model_version,
       #      "errors": errors,
       #  }
-    results = {"predictions": None}
+    results = {"predictions": None, "errors": None}
     data['DLTV_std'] = StandardScaler().fit_transform(data[['DLTV']])
     data['VL_Churn_Prob_std'] = StandardScaler().fit_transform(data[['Churn']])
     data['Efectividad_cobro_std'] = StandardScaler().fit_transform(data[['Efectividad_cobro']])
