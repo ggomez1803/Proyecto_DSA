@@ -216,8 +216,16 @@ async def predict(input_data: MultipleDataInputs) -> Any:
     print(input_data)
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
 
+    input_data = [
+                    {
+                        "Churn": 0.01,
+                        "Efectividad_cobro": 0.98,
+                        "DLTV": 2000000,
+                    }
+                ]
+
     logger.info(f"Making prediction on inputs: {input_data.inputs}")
-    results = make_prediction(input_data=input_df.replace({np.nan: None}))
+    results = make_prediction(input_data=input_data)
     
     if results["errors"] is not None:
         logger.warning(f"Prediction validation error: {results.get('errors')}")
