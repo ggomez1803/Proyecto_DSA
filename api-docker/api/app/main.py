@@ -210,6 +210,7 @@ def health() -> dict:
 # Ruta para realizar las predicciones
 @api_router.post("/predict", response_model=PredictionResults, status_code=200)
 async def predict(input_data: Dict) -> Any:
+    print(input_data)
     """
     Prediccion usando el modelo de segmentación
     """
@@ -300,7 +301,7 @@ def make_prediction(
     input_data: t.Union[pd.DataFrame, dict],
 ) -> dict:
     """Make a prediction using a saved model pipeline."""
-    print(input_data)
+    print(input_data.to_string)
     data = pd.DataFrame(input_data)
     validated_data, errors = validate_inputs(input_data=data)
     print(validated_data)
