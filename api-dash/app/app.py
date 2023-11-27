@@ -9,6 +9,7 @@ import os
 import joblib
 from sklearn.preprocessing import StandardScaler
 import numpy as np
+import plotly.graph_objs as go
 
 # app server
 app = dash.Dash(
@@ -80,24 +81,23 @@ app.layout = html.Div(
             ],
         ),
         # Gráfica de la serie de tiempo
-        #html.Div(
-        #    id="model_graph",
-        #    children=[
-        #        html.B("Gráfica de donantes por segmento según su valor y probabilidad de fuga"),
-        #        html.Hr(),
-        #        dcc.Graph(
-        #            id="plot_series",
-        #        )
-        #    ],
-        #),
+        html.Div(
+            id="model_graph",
+            children=[
+                html.B("Gráfica de donantes por segmento según su valor y probabilidad de fuga"),
+                html.Hr(),
+                dcc.Graph(
+                    id="plot_series",
+                )
+            ],
+        ),
     ],
 )
 
 # Method to update prediction
 @app.callback(
     [Output(component_id='resultado', component_property='children'),
-    #Output(component_id='plot_series', component_property='figure')],
-    ],
+    Output(component_id='plot_series', component_property='figure')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value'),
@@ -119,6 +119,7 @@ def update_output_div(fuga, efect, dltv, n_clicks):
                 }
             ]
         }
+
         headers = {"Content-Type": "application/json", "accept": "application/json"}
 
         # POST call to the API
@@ -146,12 +147,32 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         logger.info("Result: {}".format(result))
 
     # Actualiza la figura
-    figure = dcc.Graph(
-        id="plot_series",
-        figure=figure,
-        style={"height": "100%", "width": "100%"},
-        config={"displayModeBar": False}
+    #figure = dcc.Graph(
+    #    id="plot_series",
+    #    figure=figure,
+    #    style={"height": "100%", "width": "100%"},
+    #    config={"displayModeBar": False}
+    #)
+
+    # Construye el gráfico de dispersión
+    scatter_trace = go.Scatter(
+        x=[float(fuga)],
+        y=[float(dltv)],
+        mode='markers',
+        marker=dict(size=10, color='blue'),  # puedes ajustar el tamaño y color
+        name='Datos de entrada',
+        text='Donante'  # etiqueta para los puntos
     )
+
+    layout = go.Layout(
+        title='Gráfico de Dispersión: Fuga vs DLTV',
+        xaxis=dict(title='Probabilidad de Fuga'),
+        yaxis=dict(title='Donor Lifetime Value')
+    )
+
+    figure = go.Figure(data=[scatter_trace], layout=layout)
+
+    n_clicks = 0
 
     return result, figure
  
