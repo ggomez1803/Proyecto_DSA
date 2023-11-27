@@ -76,7 +76,7 @@ app.layout = html.Div(
                 # Botón para activar la predicción
                 html.Button('Realizar Predicción', id='boton-prediccion', n_clicks=0),
                 html.Br(),
-                html.H6(html.Div(id='resultado')),
+                html.H2(html.Div(id='resultado')),
             ],
         ),
         # Gráfica de la serie de tiempo
