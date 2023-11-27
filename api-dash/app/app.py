@@ -79,24 +79,12 @@ app.layout = html.Div(
                 html.H6(html.Div(id='resultado')),
             ],
         ),
-        # Gráfica de la serie de tiempo
-        html.Div(
-            id="model_graph",
-            children=[
-                html.B("Gráfica de donantes por segmento según su valor y probabilidad de fuga"),
-                html.Hr(),
-                dcc.Graph(
-                    id="plot_series",
-                )
-            ],
-        ),
     ],
 )
 
 # Method to update prediction
 @app.callback(
-    [Output(component_id='resultado', component_property='children'),
-    Output(component_id='plot_series', component_property='figure')],
+    [Output(component_id='resultado', component_property='children')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value'),
@@ -144,15 +132,7 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         result = f'El donante pertenece al cluster: {cluster}'
         logger.info("Result: {}".format(result))
 
-    # Actualiza la figura
-    figure = dcc.Graph(
-        id="plot_series",
-        figure=figure,
-        style={"height": "100%", "width": "100%"},
-        config={"displayModeBar": False}
-    )
-
-    return result, figure
+    return result
  
 
 # Run the server
