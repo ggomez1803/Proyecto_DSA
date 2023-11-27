@@ -113,8 +113,8 @@ def update_output_div(fuga, efect, dltv, n_clicks):
             "inputs": [
                 {
                     "Churn": float(fuga),
-                    "Efectividad_cobro": float(efect),
-                    "DLTV": float(dltv)
+                    "DLTV": float(dltv),
+                    "Efectividad_cobro": float(efect)
                 }
             ]
         }
