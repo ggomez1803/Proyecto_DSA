@@ -80,23 +80,24 @@ app.layout = html.Div(
             ],
         ),
         # Gráfica de la serie de tiempo
-        html.Div(
-            id="model_graph",
-            children=[
-                html.B("Gráfica de donantes por segmento según su valor y probabilidad de fuga"),
-                html.Hr(),
-                dcc.Graph(
-                    id="plot_series",
-                )
-            ],
-        ),
+        #html.Div(
+        #    id="model_graph",
+        #    children=[
+        #        html.B("Gráfica de donantes por segmento según su valor y probabilidad de fuga"),
+        #        html.Hr(),
+        #        dcc.Graph(
+        #            id="plot_series",
+        #        )
+        #    ],
+        #),
     ],
 )
 
 # Method to update prediction
 @app.callback(
     [Output(component_id='resultado', component_property='children'),
-    Output(component_id='plot_series', component_property='figure')],
+    #Output(component_id='plot_series', component_property='figure')],
+    ],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value'),
