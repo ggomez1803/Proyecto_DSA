@@ -67,16 +67,27 @@ app.layout = html.Div(
                 html.Div(["Probabilidad de fuga del donante (0-100): ",
                           dcc.Input(id='fuga', value='0', type='number')]),
                 html.Br(),
-                html.Div(["Donor lifetime valus del donante",
+                html.Div(["Efectividad de cobro (0-1)",
                           dcc.Input(id='dltv', value='0', type='number')]),
                 html.Br(),
-                html.Div(["Efectividad de cobro (0-1)",
+                html.Div(["Donor lifetime value del donante: ",
                           dcc.Input(id='efect', value='0', type='number')]),
                 html.Br(),
                 # Botón para activar la predicción
                 html.Button('Realizar Predicción', id='boton-prediccion', n_clicks=0),
                 html.Br(),
-                html.H3(html.Div(id='resultado')),
+                html.H6(html.Div(id='resultado')),
+            ],
+        ),
+        # Gráfica de la serie de tiempo
+        html.Div(
+            id="model_graph",
+            children=[
+                html.B("Gráfica de donantes por segmento según su valor y probabilidad de fuga"),
+                html.Hr(),
+                dcc.Graph(
+                    id="plot_series",
+                )
             ],
         ),
     ],
@@ -84,7 +95,8 @@ app.layout = html.Div(
 
 # Method to update prediction
 @app.callback(
-    [Output(component_id='resultado', component_property='children')],
+    [Output(component_id='resultado', component_property='children'),
+    Output(component_id='plot_series', component_property='figure')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value'),
@@ -132,7 +144,15 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         result = f'El donante pertenece al cluster: {cluster}'
         logger.info("Result: {}".format(result))
 
-    return result
+    # Actualiza la figura
+    figure = dcc.Graph(
+        id="plot_series",
+        figure=figure,
+        style={"height": "100%", "width": "100%"},
+        config={"displayModeBar": False}
+    )
+
+    return result, figure
  
 
 # Run the server
