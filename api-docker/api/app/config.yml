@@ -1,0 +1,60 @@
+# Nombre del paquete
+package_name: modelo-abandono
+
+# Archivos de datos
+train_data_file: bankchurn_train.csv
+test_data_file: bankchurn_test.csv
+
+# Variables
+# Objetivo
+target: cluster
+
+features:
+  - Churn
+  - Efectividad_cobro
+  - DLTV
+
+temp_features:
+ - Gender
+ #- Dependent_count
+ #- Education_Level
+ #- Marital_Status
+ #- Income_Category
+ #- Card_Category
+ #- Months_on_book
+ #- Credit_Limit
+ #- Avg_Open_To_Buy
+ #- Avg_Utilization_Ratio
+
+# pipelines
+pipeline_name: modelo-abandono
+pipeline_save_file: modelo-abandono-output
+
+# fracción del conjunto de prueba
+test_size: 0.25
+
+# semilla
+random_state: 42
+
+# hiperparámetros del modelo 
+#n_estimators: 850
+
+#max_depth: 19
+
+k: 5
+
+# variables a mapear
+qual_vars:
+  - Cluster
+
+# 
+categorical_vars:
+  - Cluster
+
+# mapeo de variables
+qual_mappings:
+  Campeones: 3
+  Comprometidos: 1
+  Hibernando: 0
+  En riesgo: 2
+  En fuga: 4

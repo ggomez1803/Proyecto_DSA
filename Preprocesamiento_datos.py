@@ -19,14 +19,14 @@ df_donantes = pr_donantes.corregir_fechas('Fecha de Captación', 'DT_Captacion',
 df_donantes = pr_donantes.corregir_fechas('Fecha Aniversario Pago', 'DT_Aniversario_Pago', return_errors)
 
 # Corregir las edades que no hacen sentido
-df_donantes = pr_donantes.corregir_edades(return_errors)
+df_donantes, df_error_edades = pr_donantes.corregir_edades(return_errors=True)
 
 # Corregir el número de hijos
 df_donantes = pr_donantes.corregir_cantidad_hijos('Cantidad de Hijos', return_errors)
 
 # Corregir la columna probabilidades
-df_donantes = pr_donantes.corregir_prob('Churn Probability')
-df_donantes = pr_donantes.corregir_prob('Lapsed Probability')
+#df_donantes = pr_donantes.corregir_prob('Churn Probability')
+#df_donantes = pr_donantes.corregir_prob('Lapsed Probability')
 
 # Corregir las columnas de ciudad y departamento
 df_donantes = pr_donantes.corregir_ciudades_o_departamentos('Ciudad de correo', 'Ciudad')
@@ -52,13 +52,15 @@ df_donantes = pr_donantes.ajustar_nombre_y_tipo_columnas('Ciudad de correo', 'CD
 df_donantes = pr_donantes.ajustar_nombre_y_tipo_columnas('Estado o provincia de correo', 'CD_Departamento', 'str')
 
 # Filtrar donantes con captación menor a 3 meses
-df_donantes = pr_donantes.remover_donantes_menos_3_meses('DT_Captacion')
+df_donantes, df_nuevos = pr_donantes.remover_donantes_menos_3_meses('DT_Captacion')
 
 # Corregir la columna Tiene Hijos
 df_donantes = pr_donantes.corregir_tiene_hijos()
 
 # Guardar datos
 df_donantes.to_csv(Rutas.ruta_base_donantes_preprocesada, index=False, encoding='latin-1')
+df_nuevos.to_csv(Rutas.ruta_base_donantes_nuevos, index=False, encoding='latin-1')
+df_error_edades.to_csv(Rutas.ruta_base_donantes_error_edades, index=False, encoding='latin-1')
 
 # Imprimir mensaje de finalización
 print('Proceso finalizado para la base de donantes')

@@ -1,7 +1,8 @@
 # Importar librerias
-import numpy as np
 import pandas as pd
 import datetime as dt
+import numpy as np
+import Rutas
 
 today = dt.date.today()
 anio_actual = today.year
@@ -21,16 +22,11 @@ def lifespan(df: pd.DataFrame):
     # Eliminar registros con valor 0
     df = df[df['VL_NChurn'] != 0]
 
-    tope_edad = 90
-
     # Calcular el lifespan
-    df['VL_Lifespan'] = 1/df['VL_NChurn']
+    df['VL_Lifespan'] = 100/df['VL_NChurn']
 
-    # Reemplazar valores infinitos por el tope de edad
-    df['VL_Lifespan'].replace(np.inf, tope_edad, inplace=True)
-
-    # Si la edad + lifespan es mayor al tope de edad, se reemplaza el lifespan por el tope de edad menos la edad
-    df['VL_Lifespan'] = np.where(df['VL_Edad'] + df['VL_Lifespan'] > tope_edad, tope_edad - df['VL_Edad'], df['VL_Lifespan'])
+    # Modificar lifespan si la suma de lifespan más la edad es mayor a 90
+    df.loc[df['VL_Lifespan'] + df['VL_Edad'] > 90, 'VL_Lifespan'] = 90 - df['VL_Edad']
     return df
 
 #Función que calcula el valor presente acumulado
@@ -63,7 +59,12 @@ def calcular_vp(row, inflacion:pd.DataFrame):
         acumulado (float): Valor presente acumulado"""
     #Inflación más reciente
     ipc = inflacion.loc[inflacion.index.max()]["Inflación total 1"]
-    montos = [row['Total_Anual']/((1+ipc)**t) for t in range(1, int(row['VL_Lifespan']+1))]
+    if int(row['VL_Lifespan']) == 0:
+        lifespan = 2
+    else:
+        lifespan = int(row['VL_Lifespan']+1)
+
+    montos = [row['Total_Anual']/((1+ipc)**t) for t in range(1, lifespan)]
     return sum(montos)
 
 # Función para cargar el archivo de inflación
@@ -76,25 +77,27 @@ def cargar_inflacion():
     ## Extraer el año de la fecha
     df_inflacion["anio"] = df_inflacion["Año(aaaa)-Mes(mm)"].apply(lambda x: x[0:4])
     # Sacar la media de inflación por año
-    (df_inflacion.groupby("anio").agg({"Inflación total 1":"mean"}) / 100).to_csv("inflacion_promedio_anual.csv")
+    (df_inflacion.groupby("anio").agg({"Inflación total 1":"mean"}) / 100).to_csv(Rutas.ruta_inflacion_prom_anual, encoding='latin-1')
     # Leer el archivo procesado
-    df_inflacion = pd.read_csv("inflacion_promedio_anual.csv",index_col="anio")
+    df_inflacion = pd.read_csv(Rutas.ruta_inflacion_prom_anual, index_col="anio", encoding='latin-1')
     return df_inflacion
 
 # Función para cargar las transacciones válidas para el análisis
-def cargar_transacciones():
+def cargar_transacciones(df: pd.DataFrame):
     """Función para cargar las transacciones válidas para el análisis
+    Args:
+        df (DataFrame): DataFrame con las transacciones
     Returns:
         df_transacciones (DataFrame): DataFrame con las transacciones válidas para el análisis"""
     # Leer el archivo de datos
-    df_transacciones = pd.read_csv('./Archivos_Cliente/Transacciones_Individuales_preprocesada.csv', encoding='latin1')
+    df = pd.read_csv(Rutas.ruta_transacciones_individuales_preprocesada, encoding='latin1')
     # Filtrar transacciones cobradas
-    df_transacciones = df_transacciones[df_transacciones['FK_CD_Etapa'] == 'Cobrada']
+    df = df[df['FK_CD_Etapa'] == 'Cobrada']
     # Convertir la fecha a datetime
-    df_transacciones['DT_Fecha'] = pd.to_datetime(df_transacciones['DT_Fecha'])
+    df['DT_Fecha'] = pd.to_datetime(df['DT_Fecha'])
     # Extraer el mes y el año de la fecha
-    df_transacciones['Mes_Donacion'] = df_transacciones['DT_Fecha'].dt.month
-    df_transacciones['Anio_Donacion'] = df_transacciones['DT_Fecha'].dt.year
+    df['Mes_Donacion'] = df['DT_Fecha'].dt.month
+    df['Anio_Donacion'] = df['DT_Fecha'].dt.year
     ##Diferencia entre el año actual y en el que se hizo la donación
-    df_transacciones['Ant_Primer_Transaccion'] = anio_actual - df_transacciones["Anio_Donacion"]
-    return df_transacciones
+    df['Ant_Primer_Transaccion'] = anio_actual - df["Anio_Donacion"]
+    return df
