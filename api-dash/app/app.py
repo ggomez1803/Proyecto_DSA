@@ -64,13 +64,13 @@ app.layout = html.Div(
             children=[
                 # Nuevos campos de entrada para DLTV y Fuga
                 html.H3("Ingrese la información del donante:"),
-                html.Div(["Probabilidad de fuga del donante: ",
+                html.Div(["Probabilidad de fuga del donante (0-100): ",
                           dcc.Input(id='fuga', value='0', type='number')]),
                 html.Br(),
                 html.Div(["Donor lifetime value del donante: ",
                           dcc.Input(id='dltv', value='350000', type='number')]),
                 html.Br(),
-                html.Div(["Efectividad de cobro: ",
+                html.Div(["Efectividad de cobro (0-1): ",
                           dcc.Input(id='efect', value='0', type='number')]),
                 html.Br(),
                 # Botón para activar la predicción
@@ -129,13 +129,13 @@ def update_output_div(fuga, efect, dltv, n_clicks):
         cluster = ""
 
         if data["predictions"][0] == 0:
-            cluster = "Campeones"
+            cluster = "Hibernando"
         elif data["predictions"][0] == 1:
             cluster = "Comprometidos"
         elif data["predictions"][0] == 2:
-            cluster = "Hibernando"
-        elif data["predictions"][0] == 3:
             cluster = "En riesgo"
+        elif data["predictions"][0] == 3:
+            cluster = "Campeones"
         elif data["predictions"][0] == 4:
             cluster = "En fuga"
         else:

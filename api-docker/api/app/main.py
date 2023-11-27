@@ -311,6 +311,17 @@ def make_prediction(
     
     # Realizar predicción
     #cluster = modelo_segmentacion.predict(validated_data[['DLTV_std', 'VL_Churn_Prob_std', 'Efectividad_cobro_std']])
+    dltv_mean = 2052875.1935207853
+    dltv_std = 1106063.9693825627
+    churn_mean = 0.7525753912711541
+    churn_std = 0.5247159306383898
+    efect_mean = 0.9211417379699978
+    efect_std = 0.14987482287122253
+
+    data['DLTV'] = (data['DLTV'] - dltv_mean) / dltv_std
+    data['Churn'] = (data['Churn'] - churn_mean) / churn_std
+    data['Efectividad_cobro'] = (data['Efectividad_cobro'] - efect_mean) / efect_std
+    
     cluster = modelo_segmentacion.predict(data[['DLTV', 'Churn', 'Efectividad_cobro']])
 
     print(f'Se recibe el DLTV: {data["DLTV"]}')
