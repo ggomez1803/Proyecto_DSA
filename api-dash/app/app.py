@@ -97,7 +97,8 @@ app.layout = html.Div(
 # Method to update prediction
 @app.callback(
     [Output(component_id='resultado', component_property='children'),
-    Output(component_id='plot_series', component_property='figure')],
+    Output(component_id='plot_series', component_property='figure'),
+    Output('boton-prediccion', 'n_clicks')],
     [Input(component_id='fuga', component_property='value'), 
      Input(component_id='dltv', component_property='value'), 
      Input(component_id='efect', component_property='value'),
