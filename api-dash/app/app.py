@@ -174,7 +174,7 @@ def update_output_div(fuga, efect, dltv, n_clicks):
 
     n_clicks = 0
 
-    return result, figure
+    return result, figure, n_clicks
  
 
 # Run the server
