@@ -68,10 +68,10 @@ app.layout = html.Div(
                 html.Div(["Probabilidad de fuga del donante (0-100): ",
                           dcc.Input(id='fuga', value='0', type='number')]),
                 html.Br(),
-                html.Div(["Efectividad de cobro (0-1)",
+                html.Div(["Donor lifetime value del donante:",
                           dcc.Input(id='dltv', value='0', type='number')]),
                 html.Br(),
-                html.Div(["Donor lifetime value del donante: ",
+                html.Div(["Efectividad de cobro (0-1):",
                           dcc.Input(id='efect', value='0', type='number')]),
                 html.Br(),
                 # Botón para activar la predicción
@@ -104,7 +104,7 @@ app.layout = html.Div(
      Input(component_id='efect', component_property='value'),
      Input('boton-prediccion', 'n_clicks')]
 )
-def update_output_div(fuga, efect, dltv, n_clicks):
+def update_output_div(fuga, dltv, efect, n_clicks):
     # Inicializa el resultado y la figura
     result = None
     figure = None
